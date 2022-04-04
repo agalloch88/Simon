@@ -1,18 +1,32 @@
-buttonColors = ["red", "blue", "green", "yellow"];
+var buttonColors = ["red", "blue", "green", "yellow"];
 
-gamePattern = [];
-userClickedPattern = [];
+var gamePattern = [];
+var userClickedPattern = [];
+var level = 0;
+var started = false;
 
-$(".btn").click(function() {
-    var userChosenColor = $(this).attr("id");
-    userClickedPattern.push(userChosenColor);
-    console.log(userClickedPattern);
-    playSound(userChosenColor);
-    // animatePress(userChosenColor);
-    // checkAnswer(userChosenColor);
-})
+// use jquery to detect when keyboard key has been pressed
+$(document).keypress(function () {
+  // if game has not started, start game
+  if (!started) {
+    $("#level-title").text("Level " + level);
+    nextSequence();
+    started = true;
+  }
+});
+
+$(".btn").click(function () {
+  var userChosenColor = $(this).attr("id");
+  userClickedPattern.push(userChosenColor);
+  console.log(userClickedPattern);
+  playSound(userChosenColor);
+  animatePress(userChosenColor);
+  // checkAnswer(userChosenColor);
+});
 
 function nextSequence() {
+  level++;
+  $("#level-title").text("Level " + level);
   var randomNumber = Math.floor(Math.random() * 4);
   var randomChosenColor = buttonColors[randomNumber];
   gamePattern.push(randomChosenColor);
@@ -22,9 +36,14 @@ function nextSequence() {
   playSound(randomChosenColor);
 }
 
-
-
 function playSound(name) {
   var audio = new Audio("sounds/" + name + ".mp3");
   audio.play();
+}
+
+function animatePress(currentColor) {
+  $(`#${currentColor}`).addClass("pressed");
+  setTimeout(function () {
+    $(`#${currentColor}`).removeClass("pressed");
+  }, 100);
 }
